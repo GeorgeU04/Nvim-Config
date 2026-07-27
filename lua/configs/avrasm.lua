@@ -14,8 +14,9 @@ vim.api.nvim_create_autocmd("FileType", {
   pattern = "asm",
   callback = function()
     vim.bo.commentstring = "// %s"
-    vim.bo.tabstop = 8
-    vim.bo.shiftwidth = 8
-    vim.bo.expandtab = false
+    vim.bo.tabstop = 4
+    vim.bo.shiftwidth = 4
+    vim.bo.softtabstop = 4
+    vim.bo.expandtab = true
   end,
 })

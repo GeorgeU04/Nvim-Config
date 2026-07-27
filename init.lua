@@ -1,6 +1,12 @@
 vim.g.base46_cache = vim.fn.stdpath "data" .. "/base46/"
 vim.g.mapleader = " "
 
+-- Rust/cargo tools (tree-sitter-cli, asm-lsp) live here
+local cargo_bin = vim.fn.expand("~/.cargo/bin")
+if vim.fn.isdirectory(cargo_bin) == 1 then
+  vim.env.PATH = cargo_bin .. ":" .. vim.env.PATH
+end
+
 -- bootstrap lazy and all plugins
 local lazypath = vim.fn.stdpath "data" .. "/lazy/lazy.nvim"
 
@@ -10,7 +16,6 @@ if not vim.uv.fs_stat(lazypath) then
 end
 
 vim.opt.rtp:prepend(lazypath)
-vim.opt.rtp:append(vim.fn.stdpath "data" .. "/site")
 
 local lazy_config = require "configs.lazy"
 

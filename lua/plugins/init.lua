@@ -23,6 +23,7 @@ return {
         "latex", "cpp",
         "javascript", "typescript", "tsx", "json",
         "asm",
+        "rust",
       },
     },
   },
@@ -58,6 +59,24 @@ return {
         executable = "latexmk",
         options = { "-pdf", "-interaction=nonstopmode", "-synctex=1" },
       }
+    end,
+  },
+
+  {
+    "windwp/nvim-autopairs",
+    opts = {
+      disable_filetype = { "TelescopePrompt", "vim", "asm" },
+    },
+  },
+
+  {
+    "hrsh7th/nvim-cmp",
+    opts = function()
+      return require("configs.cmp")()
+    end,
+    config = function(_, opts)
+      require("cmp").setup(opts)
+      require("configs.cmp").after_setup()
     end,
   },
 
