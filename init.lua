@@ -38,6 +38,7 @@ dofile(vim.g.base46_cache .. "statusline")
 require "options"
 require "autocmds"
 require "configs.avrasm"
+require "configs.tex"
 
 vim.schedule(function()
   require "mappings"

@@ -28,17 +28,20 @@ return {
     },
   },
 
-  -- Add this block for LaTeX support
+  -- LaTeX support (compile + view in Okular)
   {
     "lervag/vimtex",
-    lazy = false, -- load immediately
+    lazy = false,
     config = function()
-      -- PDF viewer
-      vim.g.vimtex_view_method = "zathura"
-      -- disable quickfix pop-up
+      vim.g.vimtex_view_method = "general"
+      vim.g.vimtex_view_general_viewer = "okular"
+      -- Keep options simple; @pdf is expanded by vimtex to the real PDF path
+      vim.g.vimtex_view_general_options = "--unique @pdf"
       vim.g.vimtex_quickfix_mode = 0
-      -- enable continuous compilation
+      vim.g.vimtex_syntax_enabled = 1
       vim.g.vimtex_compiler_latexmk = {
+        -- Aux junk goes in build/; PDF stays next to the .tex for reliable viewing
+        aux_dir = "build",
         continuous = 1,
         callback = 1,
         executable = "latexmk",
@@ -48,18 +51,8 @@ return {
   },
 
   {
-    "lervag/vimtex",
-    lazy = false,
-    config = function()
-      vim.g.vimtex_view_method = "zathura"
-      vim.g.vimtex_quickfix_mode = 0
-      vim.g.vimtex_compiler_latexmk = {
-        continuous = 1,
-        callback = 1,
-        executable = "latexmk",
-        options = { "-pdf", "-interaction=nonstopmode", "-synctex=1" },
-      }
-    end,
+    "micangl/cmp-vimtex",
+    ft = { "tex", "plaintex", "latex" },
   },
 
   {

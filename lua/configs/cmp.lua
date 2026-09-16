@@ -25,6 +25,17 @@ function M.after_setup()
       { name = "async_path", group_index = 2 },
     }),
   })
+
+  -- LaTeX: vimtex commands/cites + texlab LSP
+  cmp.setup.filetype({ "tex", "plaintex", "latex" }, {
+    sources = cmp.config.sources({
+      { name = "vimtex", group_index = 1 },
+      { name = "nvim_lsp", group_index = 1 },
+      { name = "luasnip", group_index = 1 },
+      { name = "buffer", group_index = 2 },
+      { name = "async_path", group_index = 2 },
+    }),
+  })
 end
 
 setmetatable(M, {

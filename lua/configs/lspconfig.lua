@@ -23,6 +23,32 @@ local servers = {
 }
 vim.lsp.enable(servers)
 
+-- texlab: LaTeX LSP (command completion, diagnostics, build helpers)
+vim.lsp.config("texlab", {
+  settings = {
+    texlab = {
+      build = {
+        executable = "latexmk",
+        args = {
+          "-pdf",
+          "-interaction=nonstopmode",
+          "-synctex=1",
+          "-auxdir=build",
+          "%f",
+        },
+        onSave = false,
+      },
+      forwardSearch = {
+        executable = "okular",
+        args = { "--unique", "%p" },
+      },
+      completion = {
+        matcher = "fuzzy-ignore-case",
+      },
+    },
+  },
+})
+
 -- rust-analyzer: full cargo diagnostics normally only run on save (unlike clangd).
 -- Experimental diagnostics + autosave-on-idle make errors appear while editing.
 vim.lsp.config("rust_analyzer", {

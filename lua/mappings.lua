@@ -77,6 +77,59 @@ map("n", "<leader>oh", function()
   vim.fn.jobstart({ "xdg-open", file }, { detach = true })
 end, { desc = "Open HTML in browser" })
 
+-- Compile current TeX project and open the PDF in Okular
+map("n", "<leader>ot", function()
+  if not vim.tbl_contains({ "tex", "plaintex", "latex" }, vim.bo.filetype) then
+    vim.notify("Current file is not a TeX file", vim.log.levels.WARN)
+    return
+  end
+
+  if vim.fn.expand("%") == "" then
+    vim.notify("No file open", vim.log.levels.WARN)
+    return
+  end
+
+  vim.cmd "update"
+
+  local function open_pdf()
+    -- Use vimtex's resolved path (handles main-file / aux_dir correctly)
+    local pdf = ""
+    if vim.b.vimtex and vim.b.vimtex.compiler then
+      pdf = vim.fn.eval "b:vimtex.compiler.get_file('pdf')" or ""
+    end
+
+    if pdf ~= "" and vim.fn.filereadable(pdf) == 1 then
+      vim.fn.jobstart({ "okular", "--unique", pdf }, { detach = true })
+      return true
+    end
+
+    return false
+  end
+
+  local group = vim.api.nvim_create_augroup("TexOpenOkularOnce", { clear = true })
+  vim.api.nvim_create_autocmd("User", {
+    group = group,
+    pattern = "VimtexEventCompileSuccess",
+    once = true,
+    callback = function()
+      -- Brief delay so the PDF is flushed to disk
+      vim.defer_fn(function()
+        if open_pdf() then
+          return
+        end
+        -- One retry, then fall back to vimtex's viewer
+        vim.defer_fn(function()
+          if not open_pdf() then
+            vim.cmd "VimtexView"
+          end
+        end, 500)
+      end, 200)
+    end,
+  })
+
+  vim.cmd "VimtexCompileSS"
+end, { desc = "Compile TeX and open in Okular" })
+
 -- Avante AI shortcuts
 map("n", "<leader>aa", "<cmd>AvanteAsk<CR>", { desc = "Avante Ask" })
 map("v", "<leader>aa", "<cmd>AvanteAsk<CR>", { desc = "Avante Ask selected code" })
