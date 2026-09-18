@@ -32,10 +32,12 @@ map("n", "<leader>cb", function()
   vim.cmd("bdelete " .. current_buf)
 end, { desc = "Close buffer, keep window" })
 
--- Ctrl+S to format and save
+-- Ctrl+S to format and save (format must be sync or the buffer is dirtied again after write)
 map({ "n", "i" }, "<C-s>", function()
-  vim.lsp.buf.format({ async = true }) -- format the file
-  vim.cmd("write")                     -- save the file
+  pcall(function()
+    require("conform").format { async = false, lsp_fallback = true }
+  end)
+  vim.cmd "write"
 end, { desc = "Format & Save" })
 
 -- Window navigation
