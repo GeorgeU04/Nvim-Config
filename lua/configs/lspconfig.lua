@@ -23,6 +23,53 @@ local servers = {
 }
 vim.lsp.enable(servers)
 
+-- pyright: use project venv / $VIRTUAL_ENV so installed packages resolve
+local function find_python(root)
+  if vim.env.VIRTUAL_ENV and vim.env.VIRTUAL_ENV ~= "" then
+    local candidate = vim.env.VIRTUAL_ENV .. "/bin/python"
+    if vim.fn.executable(candidate) == 1 then
+      return candidate
+    end
+  end
+
+  if not root or root == "" then
+    return nil
+  end
+
+  for _, name in ipairs { ".venv", "venv", "env" } do
+    local candidate = root .. "/" .. name .. "/bin/python"
+    if vim.fn.executable(candidate) == 1 then
+      return candidate
+    end
+  end
+
+  return nil
+end
+
+vim.lsp.config("pyright", {
+  before_init = function(_, config)
+    local python = find_python(config.root_dir)
+    if not python then
+      return
+    end
+
+    config.settings = vim.tbl_deep_extend("force", config.settings or {}, {
+      python = {
+        pythonPath = python,
+      },
+    })
+  end,
+  settings = {
+    python = {
+      analysis = {
+        autoSearchPaths = true,
+        useLibraryCodeForTypes = true,
+        diagnosticMode = "openFilesOnly",
+      },
+    },
+  },
+})
+
 -- texlab: LaTeX LSP (command completion, diagnostics, build helpers)
 vim.lsp.config("texlab", {
   settings = {
