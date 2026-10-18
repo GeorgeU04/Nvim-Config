@@ -1,11 +1,8 @@
 require("nvchad.configs.lspconfig").defaults()
 
 local nvchad_lsp = require "nvchad.configs.lspconfig"
-local capabilities = vim.tbl_deep_extend(
-  "force",
-  nvchad_lsp.capabilities,
-  require("cmp_nvim_lsp").default_capabilities()
-)
+local capabilities =
+  vim.tbl_deep_extend("force", nvchad_lsp.capabilities, require("cmp_nvim_lsp").default_capabilities())
 vim.lsp.config("*", { capabilities = capabilities })
 
 require("cmp_nvim_lsp").setup()
@@ -22,6 +19,17 @@ local servers = {
   "asm_lsp",
 }
 vim.lsp.enable(servers)
+
+-- clangd: C++23 (std::print, etc.) + query g++/clang++ for system headers
+vim.lsp.config("clangd", {
+  cmd = {
+    "clangd",
+    "--background-index",
+    "--clang-tidy",
+    "--header-insertion=iwyu",
+    "--query-driver=/usr/bin/g++,/usr/bin/clang++,/usr/bin/c++,/bin/g++,/bin/clang++",
+  },
+})
 
 -- pyright: use project venv / $VIRTUAL_ENV so installed packages resolve
 local function find_python(root)

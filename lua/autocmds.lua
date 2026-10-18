@@ -23,21 +23,25 @@ vim.api.nvim_create_autocmd({ "TextChanged", "TextChangedI" }, {
     end
 
     rust_save_timer = vim.uv.new_timer()
-    rust_save_timer:start(750, 0, vim.schedule_wrap(function()
-      if rust_save_timer then
-        rust_save_timer:stop()
-        rust_save_timer:close()
-        rust_save_timer = nil
-      end
+    rust_save_timer:start(
+      750,
+      0,
+      vim.schedule_wrap(function()
+        if rust_save_timer then
+          rust_save_timer:stop()
+          rust_save_timer:close()
+          rust_save_timer = nil
+        end
 
-      if not vim.api.nvim_buf_is_valid(args.buf) then
-        return
-      end
-      if vim.bo[args.buf].modified and vim.bo[args.buf].buftype == "" then
-        vim.api.nvim_buf_call(args.buf, function()
-          vim.cmd "silent! update"
-        end)
-      end
-    end))
+        if not vim.api.nvim_buf_is_valid(args.buf) then
+          return
+        end
+        if vim.bo[args.buf].modified and vim.bo[args.buf].buftype == "" then
+          vim.api.nvim_buf_call(args.buf, function()
+            vim.cmd "silent! update"
+          end)
+        end
+      end)
+    )
   end,
 })

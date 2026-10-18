@@ -17,11 +17,20 @@ return {
     "nvim-treesitter/nvim-treesitter",
     opts = {
       ensure_installed = {
-        "vim", "lua", "vimdoc",
-        "html", "css",
-        "python", "java", "c",
-        "latex", "cpp",
-        "javascript", "typescript", "tsx", "json",
+        "vim",
+        "lua",
+        "vimdoc",
+        "html",
+        "css",
+        "python",
+        "java",
+        "c",
+        "latex",
+        "cpp",
+        "javascript",
+        "typescript",
+        "tsx",
+        "json",
         "asm",
         "rust",
       },
@@ -65,7 +74,7 @@ return {
   {
     "hrsh7th/nvim-cmp",
     opts = function()
-      return require("configs.cmp")()
+      return require "configs.cmp"()
     end,
     config = function(_, opts)
       require("cmp").setup(opts)
