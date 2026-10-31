@@ -2,34 +2,31 @@ local M = {}
 
 function M.after_setup()
   local cmp = require "cmp"
-  local nvchad_format = require("nvchad.cmp").formatting.format
-
-  cmp.register_source("avr_asm", require "cmp.sources.avr")
-
-  cmp.setup.filetype("asm", {
-    formatting = {
-      format = function(entry, item)
-        local detail = item.detail
-        item = nvchad_format(entry, item)
-        if entry.source.name == "avr_asm" and detail then
-          item.menu = detail
-        end
-        return item
-      end,
-    },
-    sources = cmp.config.sources({
-      { name = "avr_asm", group_index = 1 },
-      { name = "luasnip", group_index = 1 },
-      { name = "buffer", group_index = 2 },
-      { name = "nvim_lua", group_index = 2 },
-      { name = "async_path", group_index = 2 },
-    }),
-  })
 
   -- LaTeX: vimtex commands/cites + texlab LSP
   cmp.setup.filetype({ "tex", "plaintex", "latex" }, {
     sources = cmp.config.sources({
       { name = "vimtex", group_index = 1 },
+      { name = "nvim_lsp", group_index = 1 },
+      { name = "luasnip", group_index = 1 },
+      { name = "buffer", group_index = 2 },
+      { name = "async_path", group_index = 2 },
+    }),
+  })
+
+  -- C3: LSP + snippets
+  cmp.setup.filetype("c3", {
+    sources = cmp.config.sources({
+      { name = "nvim_lsp", group_index = 1 },
+      { name = "luasnip", group_index = 1 },
+      { name = "buffer", group_index = 2 },
+      { name = "async_path", group_index = 2 },
+    }),
+  })
+
+  -- ARM assembly: asm-lsp completions
+  cmp.setup.filetype("asm", {
+    sources = cmp.config.sources({
       { name = "nvim_lsp", group_index = 1 },
       { name = "luasnip", group_index = 1 },
       { name = "buffer", group_index = 2 },

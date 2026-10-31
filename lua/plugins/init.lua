@@ -5,6 +5,19 @@ return {
     opts = require "configs.conform",
   },
 
+  {
+    "nvim-tree/nvim-web-devicons",
+    opts = function(_, opts)
+      opts = opts or {}
+      opts.override = vim.tbl_deep_extend("force", opts.override or {}, {
+        c3 = { icon = "", color = "#5CC8A2", cterm_color = "79", name = "C3" },
+        c3i = { icon = "", color = "#5CC8A2", cterm_color = "79", name = "C3Interface" },
+        c3t = { icon = "", color = "#5CC8A2", cterm_color = "79", name = "C3Template" },
+      })
+      return opts
+    end,
+  },
+
   -- These are some examples, uncomment them if you want to see them work!
   {
     "neovim/nvim-lspconfig",
@@ -31,8 +44,9 @@ return {
         "typescript",
         "tsx",
         "json",
-        "asm",
         "rust",
+        "c3",
+        "asm",
       },
     },
   },
@@ -67,7 +81,7 @@ return {
   {
     "windwp/nvim-autopairs",
     opts = {
-      disable_filetype = { "TelescopePrompt", "vim", "asm" },
+      disable_filetype = { "TelescopePrompt", "vim" },
     },
   },
 

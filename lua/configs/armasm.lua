@@ -1,4 +1,4 @@
--- AVR assembly (ATmega328P) support for avr-gcc / GNU as (.S / .s files)
+-- ARM assembly (GNU as / arm-none-eabi) for .S / .s / .asm files
 
 vim.filetype.add {
   extension = {

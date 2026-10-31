@@ -1,10 +1,16 @@
 vim.g.base46_cache = vim.fn.stdpath "data" .. "/base46/"
 vim.g.mapleader = " "
 
--- Rust/cargo tools (tree-sitter-cli, asm-lsp) live here
+-- Rust/cargo tools (tree-sitter-cli, etc.) live here
 local cargo_bin = vim.fn.expand("~/.cargo/bin")
 if vim.fn.isdirectory(cargo_bin) == 1 then
   vim.env.PATH = cargo_bin .. ":" .. vim.env.PATH
+end
+
+-- User binaries (c3lsp, etc.)
+local local_bin = vim.fn.expand("~/.local/bin")
+if vim.fn.isdirectory(local_bin) == 1 then
+  vim.env.PATH = local_bin .. ":" .. vim.env.PATH
 end
 
 -- bootstrap lazy and all plugins
@@ -37,8 +43,9 @@ dofile(vim.g.base46_cache .. "statusline")
 
 require "options"
 require "autocmds"
-require "configs.avrasm"
 require "configs.tex"
+require "configs.c3"
+require "configs.armasm"
 
 vim.schedule(function()
   require "mappings"

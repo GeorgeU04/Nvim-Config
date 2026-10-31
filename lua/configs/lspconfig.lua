@@ -16,18 +16,39 @@ local servers = {
   "texlab",
   "jdtls",
   "ts_ls",
+  "c3_lsp",
   "asm_lsp",
 }
 vim.lsp.enable(servers)
 
--- clangd: C++23 (std::print, etc.) + query g++/clang++ for system headers
+-- C3 language server (binary: c3lsp). Install: ~/.local/bin/c3lsp
+vim.lsp.config("c3_lsp", {
+  cmd = { "c3lsp" },
+  filetypes = { "c3", "c3i" },
+})
+
+-- ARM assembly via asm-lsp (GAS). Global config: ~/.config/asm-lsp/.asm-lsp.toml
+vim.lsp.config("asm_lsp", {
+  filetypes = { "asm", "vmasm" },
+  workspace_required = false,
+  root_dir = function(bufnr, on_dir)
+    local path = vim.api.nvim_buf_get_name(bufnr)
+    if path == "" then
+      on_dir(nil)
+      return
+    end
+    on_dir(vim.fs.root(path, { ".asm-lsp.toml", ".git" }) or vim.fs.dirname(path))
+  end,
+})
+
+-- clangd: C vs C++ standards live in ~/.config/clangd/config.yaml
 vim.lsp.config("clangd", {
   cmd = {
     "clangd",
     "--background-index",
     "--clang-tidy",
     "--header-insertion=iwyu",
-    "--query-driver=/usr/bin/g++,/usr/bin/clang++,/usr/bin/c++,/bin/g++,/bin/clang++",
+    "--query-driver=/usr/bin/gcc,/usr/bin/g++,/usr/bin/clang,/usr/bin/clang++,/usr/bin/c++,/bin/gcc,/bin/g++,/bin/clang,/bin/clang++",
   },
 })
 
@@ -118,21 +139,6 @@ vim.lsp.config("rust_analyzer", {
       },
     },
   },
-})
-
--- AVR assembly via asm-lsp (GAS + avr-gcc). Requires: cargo install asm-lsp
--- Global defaults live in ~/.config/asm-lsp/.asm-lsp.toml
-vim.lsp.config("asm_lsp", {
-  filetypes = { "asm", "vmasm" },
-  workspace_required = false,
-  root_dir = function(bufnr, on_dir)
-    local path = vim.api.nvim_buf_get_name(bufnr)
-    if path == "" then
-      on_dir(nil)
-      return
-    end
-    on_dir(vim.fs.root(path, { ".asm-lsp.toml", ".git" }) or vim.fs.dirname(path))
-  end,
 })
 
 -- read :h vim.lsp.config for changing options of lsp servers
